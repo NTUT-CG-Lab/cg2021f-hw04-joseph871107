@@ -2,15 +2,17 @@ import * as THREE from '../build/three.module.js';
 import { EyeLabelSystem } from './eyeLabelSystem.js';
 import { ModelLoader } from './modelLoader.js';
 import { ModelVpdGui } from './modelVpdGui.js';
+import { MorphContainer } from './morphContainer.js';
 
 export class PmxEditor{
-    constructor(scene, camera, modelPath, mouseRaycaster, gui, vpdLoader, callback=function(){}){
+    constructor(scene, camera, modelPath, mouseRaycaster, gui, vpdLoader, morphsGui, callback=function(){}){
         this.scene = scene;
         this.camera = camera;
         this.modelPath = modelPath;
         this.mouseRaycaster = mouseRaycaster;
         this.gui = gui;
         this.vpdLoader = vpdLoader;
+        this.morphsGui = morphsGui;
         this.callback = callback;
 
 		this.mesh;
@@ -27,6 +29,7 @@ export class PmxEditor{
                 scope.mesh = modelLoader.model;
                 scope.eyeLabelSystem = new EyeLabelSystem(scene, scope.mouseRaycaster);
                 scope.vpdsGui = new ModelVpdGui(modelLoader, vpdLoader, gui);
+                scope.morphContainer = new MorphContainer(scope.morphsGui, scope.vpdsGui);
                 scope.callback(scope);
             }
         );
@@ -97,7 +100,7 @@ export class PmxEditor{
     }
 
     toJSON(){
-        return Object.assign({location: this.modelPath}, this.eyeLabelSystem.toJSON());
+        return Object.assign({location: this.modelPath}, this.eyeLabelSystem.toJSON(), this.morphContainer.toJSON());
     }
 
     fromJSON(serialize, scene, mouseRaycaster){

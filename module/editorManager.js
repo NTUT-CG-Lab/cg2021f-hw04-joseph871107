@@ -74,6 +74,7 @@ export class EditorManager{
                 scope.controls.index = pmxEditor.modelLoader.name;
                 scope.modelIndexGui.updateDisplay();
             }
+            if (flag) scope.morphsGui.updateControls(pmxEditor.morphContainer);
         }
         for (let i = 0; i < this.modelList.modellist.length; i++){
             let modelFile = this.modelList.modellist[i];
@@ -84,6 +85,7 @@ export class EditorManager{
                 this.mouseRaycaster,
                 gui,
                 this.vpdLoader,
+                this.morphsGui,
                 (pmxEditor) => process(pmxEditor, i==0)
             );
         }
@@ -127,6 +129,7 @@ export class EditorManager{
         this.editor.hide();
         this.editor = this.editors[index];
         this.modelLoaderPtr.changePtr(index);
+        this.morphsGui.updateControls(this.editor.morphContainer);
         this.editor.show();
 
         // zoomState = true;

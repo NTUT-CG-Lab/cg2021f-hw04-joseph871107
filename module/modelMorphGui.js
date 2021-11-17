@@ -59,53 +59,41 @@ export class ModelMorphGui{
         const gui = this.gui;
 
         const dictionary = this.standardlist;
-
-        const controls = {};
-        const keys = [];
+        this.dictionary = Object.keys(dictionary);
+        this.controlDictionary = Object.keys(dictionary);
 
         const morphs = gui.addFolder('stdlist');
-
-        var scope = this;
-
-        function initControls() {
-            for (const key in dictionary) {
-                controls[key] = -1;
-            }
-        }
-
-        function initKeys() {
-            for (const key in dictionary) {
-                keys.push(key);
-            }
-        }
-
-        function initMorphs() {
-            for (const key in dictionary) {
-                morphs.add(controls, key, 0, 1, 0.01).onChange(onChangeMorph);
-            }
-        }
-
-        function onChangeMorph() {
-            for (let i = 0; i < keys.length; i++) {
-                const key = keys[i];
-                const value = controls[key];
-                if (0 <= value && value <= 1)
-                    scope.modelLoaderPtr.current.model.object3D.morphTargetInfluences[i] = value;
-            }
-        }
-        this.controls = controls;
-
-        initControls();
-        initKeys();
-        initMorphs();
-
-        onChangeMorph();
-
-        morphs.open();
 
         this.gui = {
             morphs: morphs,
         }
+        this.controllers = [];
+
+        morphs.open();
+    }
+
+    initMorphs(dictionary) {
+        this.controllers = [];
+        for (const key of dictionary) {
+            var controller = this.gui.morphs.add(this.controls, key);
+            this.controllers.push(controller);
+        }
+    }
+
+    getControlIndex(index){
+        var found = this.dictionary.indexOf(index);
+        if (found != -1)
+            return this.controlDictionary.indexOf(this.controlDictionary[found]);
+        else
+            return null;
+    }
+
+    updateControls(morphContainer){
+        for(const controller of this.controllers)
+            this.gui.morphs.remove(controller);
+        this.controls = morphContainer.pairList;
+        this.initMorphs(this.dictionary);
+        this.gui.morphs.updateDisplay();
     }
 
     set guiShow(flag){

@@ -19,11 +19,13 @@ export class ModelVpdGui{
         const gui = this.gui;
 
         var dictionary = this.modelLoader.model.object3D.morphTargetDictionary;
+        this.dictionary = Object.keys(dictionary);
         const new_directory = {};
         for (const key in dictionary) {
-            new_directory[`${Object.keys(dictionary).indexOf(key) + 1}. ${key}`] = dictionary[key]
+            new_directory[`${Object.keys(dictionary).indexOf(key)}. ${key}`] = dictionary[key]
         }
         dictionary = new_directory;
+        this.controlDictionary = Object.keys(dictionary);
 
         const controls = {};
         const keys = [];
@@ -85,6 +87,7 @@ export class ModelVpdGui{
                 BasicLoader.helper.pose(scope.modelLoader.model.object3D, scope.modelVpdLoader.vpds[index]);
             }
         }
+        this.controls = controls;
 
         initControls();
         initKeys();
@@ -103,6 +106,14 @@ export class ModelVpdGui{
             poses: poses,
             morphs: morphs,
         }
+    }
+
+    getControlIndex(index){
+        var found = this.dictionary.indexOf(index);
+        if (found != -1)
+            return this.controlDictionary.indexOf(this.controlDictionary[found]);
+        else
+            return null;
     }
 
     set guiShow(flag){
