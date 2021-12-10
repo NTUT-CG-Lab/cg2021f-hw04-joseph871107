@@ -1,4 +1,4 @@
-import { BasicLoader } from '/module/modelLoader.js';
+import { BasicLoader } from './modelLoader.js';
 
 export class ModelMorphGui{
     constructor(modelLoaderPtr, gui, callback = function(){}){
